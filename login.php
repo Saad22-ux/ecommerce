@@ -66,7 +66,7 @@
 <body>
   <div class="login-container">
     <div class="login-logo">
-      <img src="/ecommerce/Images/logo-transparent.png" />
+      <img src="\ecommerce\uploads\logo.jpeg" />
       <h4 class="mt-2" style="color: white;">E-GAMES</h4>
     </div>
     <?php 

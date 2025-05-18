@@ -4,13 +4,26 @@ require_once 'Model/database.php';
 
 $products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
 
+// if (isset($_POST['add_to_cart'])) {
+//     $productId = $_POST['product_id'];
+//     if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+//     if (!in_array($productId, $_SESSION['cart'])) {
+//         $_SESSION['cart'][] = $productId;
+//     }
+// }
+
 if (isset($_POST['add_to_cart'])) {
     $productId = $_POST['product_id'];
     if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-    if (!in_array($productId, $_SESSION['cart'])) {
-        $_SESSION['cart'][] = $productId;
+
+    // Si le produit est déjà dans le panier, incrémente la quantité
+    if (isset($_SESSION['cart'][$productId])) {
+        $_SESSION['cart'][$productId]++;
+    } else {
+        $_SESSION['cart'][$productId] = 1;
     }
 }
+
 
 $isLoggedIn = isset($_SESSION['user']);
 $role = $isLoggedIn ? $_SESSION['user']['role'] : null;
