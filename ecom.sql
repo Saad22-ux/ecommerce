@@ -2,10 +2,17 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
+<<<<<<< HEAD
 -- Host: 127.0.0.1:3307
 -- Generation Time: May 19, 2025 at 12:08 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
+=======
+-- Hôte : 127.0.0.1
+-- Généré le : dim. 18 mai 2025 à 13:39
+-- Version du serveur : 10.4.32-MariaDB
+-- Version de PHP : 8.2.12
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,12 +25,17 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
+<<<<<<< HEAD
 -- Database: `ecom`
+=======
+-- Base de données : `ecom`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 
 -- --------------------------------------------------------
 
 --
+<<<<<<< HEAD
 -- Table structure for table `orders`
 --
 
@@ -73,6 +85,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`) VALUES
 
 --
 -- Table structure for table `products`
+=======
+-- Structure de la table `products`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 
 CREATE TABLE `products` (
@@ -84,18 +99,30 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+<<<<<<< HEAD
 -- Dumping data for table `products`
+=======
+-- Déchargement des données de la table `products`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`) VALUES
 (1, 'PUBG', 'description pour pubg mobile', 150, 'uploads/1747512236_pubg.jpg'),
+<<<<<<< HEAD
 (3, 'call of duty : warzone', 'jeux de tactics et de battlegro', 300, 'uploads/1747570461_images.jpeg'),
 (4, 'eFootball', 'En mode Équipe de rêve, vous pouvez créer votre propre équipe en recrutant vos joueurs et managers préférés.', 350, 'uploads/1747573860_téléchargement.jpeg');
+=======
+(2, 'call of duty: warzone', 'jeux de tactics et de battleground', 300, 'uploads/1747513715_téléchargement.jpeg');
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 
 -- --------------------------------------------------------
 
 --
+<<<<<<< HEAD
 -- Table structure for table `user`
+=======
+-- Structure de la table `user`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 
 CREATE TABLE `user` (
@@ -107,7 +134,11 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+<<<<<<< HEAD
 -- Dumping data for table `user`
+=======
+-- Déchargement des données de la table `user`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 
 INSERT INTO `user` (`id`, `email`, `password`, `role`, `fullName`) VALUES
@@ -115,6 +146,7 @@ INSERT INTO `user` (`id`, `email`, `password`, `role`, `fullName`) VALUES
 (2, 'ilyas@gmail.com', 'Ilyas2003', 'client', 'Ilyas nmrani');
 
 --
+<<<<<<< HEAD
 -- Indexes for dumped tables
 --
 
@@ -132,17 +164,29 @@ ALTER TABLE `order_items`
 
 --
 -- Indexes for table `products`
+=======
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `products`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
+<<<<<<< HEAD
 -- Indexes for table `user`
+=======
+-- Index pour la table `user`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
+<<<<<<< HEAD
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -166,6 +210,19 @@ ALTER TABLE `products`
 
 --
 -- AUTO_INCREMENT for table `user`
+=======
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `user`
+>>>>>>> 20dadbd594a7d6a240c7478cfae99d8e0e2fcad5
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
