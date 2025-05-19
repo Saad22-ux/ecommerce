@@ -2,28 +2,36 @@
 session_start();
 require_once 'Model/database.php';
 
-$products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
+$categories = ['Action', 'Jeux de rôle', 'Jeux de sport', 'Jeux de tir', 'Stratégie'];
+$filters = [];
+$params = [];
 
-// if (isset($_POST['add_to_cart'])) {
-//     $productId = $_POST['product_id'];
-//     if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-//     if (!in_array($productId, $_SESSION['cart'])) {
-//         $_SESSION['cart'][] = $productId;
-//     }
-// }
+// Construction dynamique de la requête
+$sql = "SELECT * FROM products WHERE 1";
+
+if (!empty($_GET['categorie'])) {
+    $sql .= " AND categorie = ?";
+    $params[] = $_GET['categorie'];
+}
+
+if (!empty($_GET['age'])) {
+    $sql .= " AND age >= ?";
+    $params[] = $_GET['age'];
+}
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (isset($_POST['add_to_cart'])) {
     $productId = $_POST['product_id'];
     if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-
-    // Si le produit est déjà dans le panier, incrémente la quantité
     if (isset($_SESSION['cart'][$productId])) {
         $_SESSION['cart'][$productId]++;
     } else {
         $_SESSION['cart'][$productId] = 1;
     }
 }
-
 
 $isLoggedIn = isset($_SESSION['user']);
 $role = $isLoggedIn ? $_SESSION['user']['role'] : null;
@@ -59,9 +67,12 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : null;
       transform: scale(1.02);
     }
 
-    .search-bar {
-      margin: 2rem 0;
-      max-width: 500px;
+    .filter-form {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      color: black;
     }
   </style>
 </head>
@@ -88,10 +99,36 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : null;
 
 <div class="container py-5">
 
-  <div class="search-bar mx-auto text-center">
+  <!-- Filtres -->
+  <form method="GET" class="filter-form">
+    <div class="row align-items-end">
+      <div class="col-md-5">
+        <label for="categorie" class="form-label">Catégorie</label>
+        <select name="categorie" id="categorie" class="form-control">
+          <option value="">Toutes les catégories</option>
+          <?php foreach ($categories as $cat): ?>
+            <option value="<?= $cat ?>" <?= isset($_GET['categorie']) && $_GET['categorie'] === $cat ? 'selected' : '' ?>>
+              <?= $cat ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="age" class="form-label">Âge minimum</label>
+        <input type="number" name="age" id="age" class="form-control" value="<?= isset($_GET['age']) ? htmlspecialchars($_GET['age']) : '' ?>" />
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Barre de recherche -->
+  <div class="search-bar mx-auto text-center mb-4">
     <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search for products...">
   </div>
 
+  <!-- Liste des produits -->
   <div class="row" id="productList">
     <?php foreach ($products as $product): ?>
       <div class="col-md-4 mb-4 product-card-wrapper">
@@ -107,6 +144,11 @@ $role = $isLoggedIn ? $_SESSION['user']['role'] : null;
         </div>
       </div>
     <?php endforeach; ?>
+    <?php if (empty($products)): ?>
+      <div class="col-12 text-center mt-5">
+        <p>Aucun produit trouvé avec ces filtres.</p>
+      </div>
+    <?php endif; ?>
   </div>
 
 </div>

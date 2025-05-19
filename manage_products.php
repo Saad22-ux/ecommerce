@@ -5,13 +5,15 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     exit;
 }
 
-require_once 'Model/database.php'; // adjust path if needed
+require_once 'Model/database.php';
 
 // Handle Add Product
 if (isset($_POST['add_product'])) {
     $name = $_POST['name'];
     $desc = $_POST['description'];
     $price = $_POST['price'];
+    $categorie = $_POST['categorie'];
+    $age = $_POST['age'];
 
     $imagePath = '';
     if ($_FILES['image']['name']) {
@@ -20,8 +22,8 @@ if (isset($_POST['add_product'])) {
         move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath);
     }
 
-    $sql = $pdo->prepare("INSERT INTO products (name, description, price, image) VALUES (?, ?, ?, ?)");
-    $sql->execute([$name, $desc, $price, $imagePath]);
+    $sql = $pdo->prepare("INSERT INTO products (name, description, price, image, categorie, age) VALUES (?, ?, ?, ?, ?, ?)");
+    $sql->execute([$name, $desc, $price, $imagePath, $categorie, $age]);
 }
 
 // Handle Delete
@@ -38,6 +40,8 @@ if (isset($_POST['edit_product'])) {
     $name = $_POST['name'];
     $desc = $_POST['description'];
     $price = $_POST['price'];
+    $categorie = $_POST['categorie'];
+    $age = $_POST['age'];
 
     $imagePath = $_POST['existing_image'];
     if ($_FILES['image']['name']) {
@@ -46,14 +50,15 @@ if (isset($_POST['edit_product'])) {
         move_uploaded_file($_FILES["image"]["tmp_name"], $imagePath);
     }
 
-    $sql = $pdo->prepare("UPDATE products SET name=?, description=?, price=?, image=? WHERE id=?");
-    $sql->execute([$name, $desc, $price, $imagePath, $id]);
+    $sql = $pdo->prepare("UPDATE products SET name=?, description=?, price=?, image=?, categorie=?, age=? WHERE id=?");
+    $sql->execute([$name, $desc, $price, $imagePath, $categorie, $age, $id]);
     header("Location: manage_products.php");
     exit;
 }
 
 // Fetch all products
 $products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
+$categories = ['Action', 'Jeux de rôle', 'Jeux de sport', 'Jeux de tir', 'Stratégie'];
 ?>
 
 <!DOCTYPE html>
@@ -74,6 +79,16 @@ $products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
     <textarea name="description" class="form-control my-2" placeholder="Description"></textarea>
     <input type="number" step="0.01" name="price" class="form-control my-2" placeholder="Price" required />
     <input type="file" name="image" class="form-control my-2" />
+
+    <select name="categorie" class="form-control my-2" required>
+      <option value="">-- Choisir une catégorie --</option>
+      <?php foreach ($categories as $cat): ?>
+        <option value="<?= $cat ?>"><?= $cat ?></option>
+      <?php endforeach; ?>
+    </select>
+
+    <input type="number" name="age" class="form-control my-2" placeholder="Âge minimum conseillé" required />
+
     <button type="submit" name="add_product" class="btn btn-success">Add Product</button>
   </form>
 
@@ -81,7 +96,7 @@ $products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
   <table class="table table-dark table-striped">
     <thead>
       <tr>
-        <th>Name</th><th>Description</th><th>Price</th><th>Image</th><th>Actions</th>
+        <th>Name</th><th>Description</th><th>Price</th><th>Catégorie</th><th>Âge</th><th>Image</th><th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -90,15 +105,28 @@ $products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
         <form method="POST" enctype="multipart/form-data">
           <input type="hidden" name="id" value="<?= $product['id'] ?>">
           <input type="hidden" name="existing_image" value="<?= $product['image'] ?>">
+
           <td><input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" /></td>
           <td><input type="text" name="description" class="form-control" value="<?= htmlspecialchars($product['description']) ?>" /></td>
           <td><input type="number" step="0.01" name="price" class="form-control" value="<?= $product['price'] ?>" /></td>
+
+          <td>
+            <select name="categorie" class="form-control">
+              <?php foreach ($categories as $cat): ?>
+                <option value="<?= $cat ?>" <?= $product['categorie'] === $cat ? 'selected' : '' ?>><?= $cat ?></option>
+              <?php endforeach; ?>
+            </select>
+          </td>
+
+          <td><input type="number" name="age" class="form-control" value="<?= $product['age'] ?>" /></td>
+
           <td>
             <?php if ($product['image']): ?>
               <img src="<?= $product['image'] ?>" width="50" />
             <?php endif; ?>
             <input type="file" name="image" class="form-control mt-1" />
           </td>
+
           <td>
             <button type="submit" name="edit_product" class="btn btn-warning btn-sm mb-1">Update</button>
             <a href="?delete=<?= $product['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this product?')">Delete</a>
@@ -108,6 +136,8 @@ $products = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
       <?php endforeach; ?>
     </tbody>
   </table>
+        <a href="dashboard.php" class="btn btn-outline-secondary">⬅ Back to Dashboard</a>
+
 </div>
 </body>
 </html>
