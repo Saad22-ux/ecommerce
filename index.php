@@ -2,171 +2,217 @@
 session_start();
 require_once 'Model/database.php';
 
-$categories = ['Action', 'Jeux de rôle', 'Jeux de sport', 'Jeux de tir', 'Stratégie'];
-$filters = [];
-$params = [];
-
-// Construction dynamique de la requête
-$sql = "SELECT * FROM products WHERE 1";
-
-if (!empty($_GET['categorie'])) {
-    $sql .= " AND categorie = ?";
-    $params[] = $_GET['categorie'];
-}
-
-if (!empty($_GET['age'])) {
-    $sql .= " AND age >= ?";
-    $params[] = $_GET['age'];
-}
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if (isset($_POST['add_to_cart'])) {
-    $productId = $_POST['product_id'];
-    if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-    if (isset($_SESSION['cart'][$productId])) {
-        $_SESSION['cart'][$productId]++;
-    } else {
-        $_SESSION['cart'][$productId] = 1;
-    }
-}
-
-$isLoggedIn = isset($_SESSION['user']);
-$role = $isLoggedIn ? $_SESSION['user']['role'] : null;
+$query = "
+    SELECT p.id, p.name, p.price, p.image, SUM(oi.quantity) AS total_sold
+    FROM products p
+    JOIN order_items oi ON p.id = oi.product_id
+    GROUP BY p.id
+    ORDER BY total_sold DESC
+    LIMIT 5
+";
+$stmt = $pdo->query($query);
+$topProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <title>E-GAMES - Home</title>
+  <meta charset="UTF-8" />
+  <title>Accueil - E-GAMES</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
   <style>
     body {
-      background-color: #29A;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: #eee;
+      font-family: 'Orbitron', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .navbar {
-      background-color: #222;
+      background-color: #121212;
+      box-shadow: 0 2px 10px rgba(0, 242, 255, 0.6);
     }
 
-    .product-card {
-      background-color: #fff;
-      color: #000;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
+    .navbar-brand {
+      color: #00f2ff !important;
+      font-weight: bold;
+      font-size: 1.5rem;
+      letter-spacing: 1.5px;
     }
 
-    .product-card:hover {
-      transform: scale(1.02);
+    .nav-link {
+      color: #bbb !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
     }
 
-    .filter-form {
-      background-color: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      color: black;
+    .nav-link:hover,
+    .nav-link.active {
+      color: #00f2ff !important;
+      text-shadow: 0 0 8px #00f2ff;
+    }
+
+    .container {
+      max-width: 960px;
+      margin-top: 50px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: #00f2ff;
+      text-shadow: 0 0 10px #00f2ff;
+    }
+
+    header p {
+      font-size: 1.25rem;
+      color: #bbb;
+    }
+
+    .top-products h2 {
+      color: #00f2ff;
+      margin-bottom: 25px;
+      text-align: center;
+      text-shadow: 0 0 5px #00f2ff;
+    }
+
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      border: 1px solid #333;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+    }
+
+    .card:hover {
+      box-shadow: 0 0 20px #00f2ff;
+      transform: scale(1.05);
+    }
+
+    .card-img-top {
+      border-radius: 12px 12px 0 0;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      color: #eee;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .price {
+      font-size: 1.25rem;
+      color: #00f2ff;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    footer {
+      background-color: #111;
+      color: #444;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      margin-top: 40px;
+      border-top: 1px solid #222;
+    }
+
+    a {
+      color: #00f2ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
+
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="index.php">E-GAMES</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : '' ?>" href="index.php">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'products.php' ? 'active' : '' ?>" href="products.php">Produits</a>
+          </li>
+
+          <?php if (isset($_SESSION['user'])): ?>
+            <li class="nav-item">
+              <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'cart.php' ? 'active' : '' ?>" href="cart.php">Cart</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'profil.php' ? 'active' : '' ?>" href="profil.php">Profil</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+          <?php else: ?>
+            <li class="nav-item">
+              <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'login.php' ? 'active' : '' ?>" href="login.php">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <?= basename($_SERVER['PHP_SELF']) === 'register.php' ? 'active' : '' ?>" href="register.php">Register</a>
+            </li>
+          <?php endif; ?>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
   <div class="container">
-    <a class="navbar-brand" href="#">E-GAMES</a>
-    <div>
-      <?php if ($isLoggedIn): ?>
-        <?php if ($role === 'admin'): ?>
-          <a href="dashboard.php" class="btn btn-outline-light me-2">Dashboard</a>
-        <?php else: ?>
-          <a href="cart.php" class="btn btn-outline-light me-2">Cart</a>
-        <?php endif; ?>
-        <a href="logout.php" class="btn btn-danger">Logout</a>
-      <?php else: ?>
-        <a href="login.php" class="btn btn-outline-light me-2">Login</a>
-        <a href="register.php" class="btn btn-light">Register</a>
-      <?php endif; ?>
-    </div>
-  </div>
-</nav>
+    <header>
+      <h1>Bienvenue chez E-GAMES 🎮</h1>
+      <p>La meilleure boutique en ligne pour acheter vos jeux vidéo préférés, du classique aux dernières nouveautés.</p>
+    </header>
 
-<div class="container py-5">
-
-  <!-- Filtres -->
-  <form method="GET" class="filter-form">
-    <div class="row align-items-end">
-      <div class="col-md-5">
-        <label for="categorie" class="form-label">Catégorie</label>
-        <select name="categorie" id="categorie" class="form-control">
-          <option value="">Toutes les catégories</option>
-          <?php foreach ($categories as $cat): ?>
-            <option value="<?= $cat ?>" <?= isset($_GET['categorie']) && $_GET['categorie'] === $cat ? 'selected' : '' ?>>
-              <?= $cat ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
+    <section class="top-products">
+      <h2>Nos Meilleures Ventes</h2>
+      <div class="row g-4">
+        <?php foreach ($topProducts as $product): ?>
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" class="card-img-top" />
+              <div class="card-body">
+                <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
+                <p class="price">$<?= number_format($product['price'], 2) ?></p>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
       </div>
-      <div class="col-md-3">
-        <label for="age" class="form-label">Âge minimum</label>
-        <input type="number" name="age" id="age" class="form-control" value="<?= isset($_GET['age']) ? htmlspecialchars($_GET['age']) : '' ?>" />
-      </div>
-      <div class="col-md-4">
-        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
-      </div>
-    </div>
-  </form>
-
-  <!-- Barre de recherche -->
-  <div class="search-bar mx-auto text-center mb-4">
-    <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Search for products...">
+    </section>
   </div>
 
-  <!-- Liste des produits -->
-  <div class="row" id="productList">
-    <?php foreach ($products as $product): ?>
-      <div class="col-md-4 mb-4 product-card-wrapper">
-        <div class="product-card text-center">
-          <img src="<?= htmlspecialchars($product['image']) ?>" class="img-fluid mb-2" style="height: 200px; object-fit: cover;" alt="<?= $product['name'] ?>">
-          <h5><?= htmlspecialchars($product['name']) ?></h5>
-          <p><?= htmlspecialchars($product['description']) ?></p>
-          <strong>$<?= number_format($product['price'], 2) ?></strong>
-          <form method="post" class="mt-2">
-            <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-            <button type="submit" name="add_to_cart" class="btn btn-primary btn-sm mt-2">Add to Cart</button>
-          </form>
-        </div>
-      </div>
-    <?php endforeach; ?>
-    <?php if (empty($products)): ?>
-      <div class="col-12 text-center mt-5">
-        <p>Aucun produit trouvé avec ces filtres.</p>
-      </div>
-    <?php endif; ?>
-  </div>
+  <footer>
+    &copy; <?= date('Y') ?> E-GAMES. Tous droits réservés. | <a href="contact.php">Contactez-nous</a>
+  </footer>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  const searchInput = document.getElementById('searchInput');
-  const productList = document.getElementById('productList');
-
-  searchInput.addEventListener('keyup', function() {
-    const term = this.value.toLowerCase();
-    const cards = document.querySelectorAll('.product-card-wrapper');
-    cards.forEach(card => {
-      const name = card.querySelector('h5').innerText.toLowerCase();
-      card.style.display = name.includes(term) ? 'block' : 'none';
-    });
-  });
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
