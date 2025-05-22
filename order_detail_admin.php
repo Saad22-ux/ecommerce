@@ -28,7 +28,6 @@ if (!$order) {
     exit;
 }
 
-// Récupération des produits associés
 $stmt = $pdo->prepare("
     SELECT p.name, p.price, oi.quantity
     FROM order_items oi

@@ -8,7 +8,6 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $productId = $_GET['id'];
 
-// Récupérer les détails du produit
 $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
 $stmt->execute([$productId]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -79,7 +78,6 @@ if (!$product) {
       <p><?= htmlspecialchars($product['description']) ?></p>
       <p class="price">$<?= number_format($product['price'], 2) ?></p>
 
-      <!-- Ajouter au panier -->
       <form method="post" action="cart.php">
         <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
         <div class="mb-3">

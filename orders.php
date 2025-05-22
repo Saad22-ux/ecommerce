@@ -134,7 +134,6 @@ function getOrderedProducts($pdo, $orderId, $sort)
 <div class="container py-5">
   <h2 class="mb-4 text-center">📦 Mes Commandes</h2>
 
-  <!-- Tri par prix -->
   <form method="get" class="mb-4 text-center">
     <label for="sort" class="form-label me-2">Trier par prix :</label>
     <select name="sort" id="sort" class="form-select d-inline-block w-auto">

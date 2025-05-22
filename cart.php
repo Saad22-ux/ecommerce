@@ -3,7 +3,7 @@ session_start();
 require_once 'Model/database.php';
 
 function isUserLoggedIn() {
-    return isset($_SESSION['user']); // ou ajuster selon ta logique de session
+    return isset($_SESSION['user']); 
 }
 
 

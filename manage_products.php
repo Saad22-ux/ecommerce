@@ -26,7 +26,6 @@ if (isset($_POST['add_product'])) {
   $sql->execute([$name, $desc, $price, $imagePath, $categorie, $age, $quantity]);
 }
 
-// Handle Delete
 if (isset($_GET['delete'])) {
   $id = $_GET['delete'];
   $pdo->prepare("DELETE FROM products WHERE id = ?")->execute([$id]);
@@ -269,7 +268,6 @@ select.form-control:focus {
   color: #121212;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   table, tbody, tr, td, th {
     display: block;
@@ -327,7 +325,6 @@ select.form-control:focus {
       <button type="submit" name="add_product" class="btn btn-success">Ajouter le produit</button>
     </form>
 
-    <!-- Products Table -->
     <table class="table table-dark table-striped text-center align-middle">
       <thead>
         <tr>

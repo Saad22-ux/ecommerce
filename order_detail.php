@@ -15,18 +15,15 @@ if (!$orderId || !is_numeric($orderId)) {
     exit;
 }
 
-// Vérifier que la commande appartient bien à l'utilisateur
 $stmt = $pdo->prepare("SELECT * FROM orders WHERE id = ? AND user_id = ?");
 $stmt->execute([$orderId, $userId]);
 $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$order) {
-    // commande non trouvée ou pas accessible
     header('Location: profile.php');
     exit;
 }
 
-// Récupérer les produits de la commande avec détails (nom, prix, quantité)
 $stmt = $pdo->prepare("
     SELECT p.name, p.price, oi.quantity
     FROM order_items oi

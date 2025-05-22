@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paymentMethod = $_POST['payment_method'];
     $userId = $_SESSION['user']['id'];
 
-    // Vérifier les quantités en stock avant de créer la commande
     foreach ($cart as $productId => $qty) {
         $stmt = $pdo->prepare("SELECT quantity FROM products WHERE id = ?");
         $stmt->execute([$productId]);
@@ -36,12 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Créer commande
     $pdo->prepare("INSERT INTO orders (user_id, payment_method, created_at) VALUES (?, ?, NOW())")
         ->execute([$userId, $paymentMethod]);
     $orderId = $pdo->lastInsertId();
 
-    // Ajouter les produits à la commande ET mettre à jour la quantité dans products
     foreach ($cart as $productId => $qty) {
         // Insérer order_items
         $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)")

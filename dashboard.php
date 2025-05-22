@@ -167,7 +167,6 @@ foreach ($salesData as $row) {
 <div class="main">
   <button class="theme-toggle-btn" id="theme-toggle-btn">🎨 Mode Sombre</button>
 
-  <!-- Bouton Consulter la page Home -->
   <a href="index.php" target="_blank" class="btn-home"><i class="fas fa-home"></i> Consulter la page Home</a>
 
   <h1 class="mb-4">Bienvenue, <?= htmlspecialchars($user['fullName']) ?> 👑</h1>
@@ -228,7 +227,6 @@ foreach ($salesData as $row) {
     }
   });
 
-  // Mode sombre / clair
   const toggleBtn = document.getElementById('theme-toggle-btn');
   const body = document.body;
 
