@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : mar. 20 mai 2025 à 01:34
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Host: 127.0.0.1:3307
+-- Generation Time: May 20, 2025 at 01:53 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `ecom`
+-- Database: `ecom`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `card_payments`
+-- Table structure for table `card_payments`
 --
 
 CREATE TABLE `card_payments` (
@@ -38,18 +38,19 @@ CREATE TABLE `card_payments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `card_payments`
+-- Dumping data for table `card_payments`
 --
 
 INSERT INTO `card_payments` (`id`, `order_id`, `card_number`, `card_holder`, `expiry_date`, `cvv`, `created_at`) VALUES
 (1, 9, '5400213564012', 'ilyas', '05/2026', '812', '2025-05-19 06:49:46'),
 (2, 10, '5214786321547', 'youssef', '02/2030', '451', '2025-05-19 06:58:56'),
-(3, 12, '154251555587', 'amin', '25/2028', '548', '2025-05-19 10:04:00');
+(3, 12, '154251555587', 'amin', '25/2028', '548', '2025-05-19 10:04:00'),
+(4, 14, '4445555447878', 'anas', '02/2029', '123', '2025-05-19 22:27:09');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `orders`
+-- Table structure for table `orders`
 --
 
 CREATE TABLE `orders` (
@@ -60,7 +61,7 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `orders`
+-- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `payment_method`, `created_at`) VALUES
@@ -68,16 +69,13 @@ INSERT INTO `orders` (`id`, `user_id`, `payment_method`, `created_at`) VALUES
 (10, 2, 'card', '2025-05-19 08:58:56'),
 (11, 2, 'cash', '2025-05-19 09:03:49'),
 (12, 2, 'card', '2025-05-19 12:04:00'),
-(13, 2, 'cash', '2025-05-19 11:16:53'),
-(14, 2, 'cash', '2025-05-19 12:57:16'),
-(15, 2, 'cash', '2025-05-19 13:02:59'),
-(16, 2, 'cash', '2025-05-19 16:09:02'),
-(17, 3, 'cash', '2025-05-20 00:33:19');
+(13, 2, 'cash', '2025-05-19 17:31:25'),
+(14, 2, 'card', '2025-05-20 00:27:09');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `order_items`
+-- Table structure for table `order_items`
 --
 
 CREATE TABLE `order_items` (
@@ -88,7 +86,7 @@ CREATE TABLE `order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `order_items`
+-- Dumping data for table `order_items`
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`) VALUES
@@ -98,45 +96,43 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`) VALUES
 (19, 11, 6, 2),
 (20, 12, 6, 1),
 (21, 12, 5, 1),
-(22, 13, 5, 3),
-(23, 13, 6, 1),
-(24, 13, 7, 1),
-(25, 14, 6, 1),
-(26, 15, 5, 3),
-(27, 16, 6, 3),
-(28, 17, 6, 1),
-(29, 17, 5, 1);
+(22, 13, 7, 1),
+(23, 14, 5, 1),
+(24, 14, 6, 1);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `products`
+-- Table structure for table `products`
 --
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `quantity` int(11) NOT NULL,
   `price` float NOT NULL,
   `image` varchar(255) NOT NULL,
   `categorie` varchar(255) DEFAULT NULL,
-  `age` int(11) DEFAULT NULL
+  `age` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `products`
+-- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `quantity`, `price`, `image`, `categorie`, `age`) VALUES
-(5, 'Call of  Duty', 'Call of Duty ou COD (en français l\'« Appel du devoir ») est une série de jeux vidéo de tir à la première personne sur la guerre', 19, 200, 'uploads/1747636591_1747513715_téléchargement.jpeg', 'Action', 20),
-(6, 'eFootball', 'En mode Équipe de rêve, vous pouvez créer votre propre équipe en recrutant vos joueurs et managers préférés.', 26, 350, 'uploads/1747637036_1747573860_téléchargement.jpeg', 'Jeux de sport', 16),
-(7, '8ball pool', '8 Ball Pool is an addictive challenging game based on real 3D pool games, where you will challenge your friends online.', 100, 100, 'uploads/1747638354_téléchargement (1).jpeg', 'Jeux de rôle', 14);
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `image`, `categorie`, `age`, `quantity`) VALUES
+(5, 'Call of  Duty', 'Call of Duty ou COD (en français l\'« Appel du devoir ») est une série de jeux vidéo de tir à la première personne sur la guerre', 200, 'uploads/1747636591_1747513715_téléchargement.jpeg', 'Action', 20, 1),
+(6, 'eFootball', 'En mode Équipe de rêve, vous pouvez créer votre propre équipe en recrutant vos joueurs et managers préférés.', 350, 'uploads/1747637036_1747573860_téléchargement.jpeg', 'Jeux de sport', 16, 1),
+(7, '8ball pool', '8 Ball Pool is an addictive challenging game based on real 3D pool games, where you will challenge your friends online.', 100, 'uploads/1747638354_téléchargement (1).jpeg', 'Jeux de rôle', 14, 1),
+(8, 'Chess ', 'Free online chess server. Play chess in a clean interface. No registration, no ads, no plugin required. Play chess with the computer', 50, 'uploads/1747698415_téléchargement (2).jpeg', 'Stratégie', 12, 20),
+(9, 'Forza Horizon 5', 'Explorez les paysages changeants du Mexique dans ce jeu en monde ouvert et conduisez des centaines de voitures phénoménales', 330, 'uploads/1747698539_téléchargement (1).png', 'Jeux de rôle', 10, 4),
+(10, 'Fortnite', 'Fortnite est un jeu en ligne développé par Epic Games sous la forme de différents modes de jeu qui partagent le même gameplay général et le même moteur de jeu.', 500, 'uploads/1747698753_téléchargement (3).jpeg', 'Action', 18, 1);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -148,89 +144,88 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `email`, `password`, `role`, `fullName`) VALUES
 (1, 'saad@gmail.com', 'Saad2003', 'admin', 'Elasri'),
-(2, 'ilyas@gmail.com', 'Ilyas2003', 'client', 'Ilyas nmrani'),
-(3, 'saadelasri67@gmail.com', 'Saad2003', 'client', 'Saad Elasri');
+(2, 'ilyas@gmail.com', 'Ilyas2003', 'client', 'Ilyas nmrani');
 
 --
--- Index pour les tables déchargées
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `card_payments`
+-- Indexes for table `card_payments`
 --
 ALTER TABLE `card_payments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `order_id` (`order_id`);
 
 --
--- Index pour la table `orders`
+-- Indexes for table `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `order_items`
+-- Indexes for table `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `products`
+-- Indexes for table `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT pour les tables déchargées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `card_payments`
+-- AUTO_INCREMENT for table `card_payments`
 --
 ALTER TABLE `card_payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT pour la table `orders`
+-- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT pour la table `order_items`
+-- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT pour la table `products`
+-- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT pour la table `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Contraintes pour les tables déchargées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `card_payments`
+-- Constraints for table `card_payments`
 --
 ALTER TABLE `card_payments`
   ADD CONSTRAINT `card_payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
