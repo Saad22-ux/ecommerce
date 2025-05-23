@@ -40,16 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $orderId = $pdo->lastInsertId();
 
     foreach ($cart as $productId => $qty) {
-        // Insérer order_items
         $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)")
             ->execute([$orderId, $productId, $qty]);
 
-        // Mettre à jour la quantité en stock
         $pdo->prepare("UPDATE products SET quantity = quantity - ? WHERE id = ?")
             ->execute([$qty, $productId]);
     }
 
-    // Si paiement par carte, enregistrer les infos carte
     if ($paymentMethod === 'card') {
         $cardNumber = $_POST['card_number'];
         $cardHolder = $_POST['card_holder'];
@@ -146,7 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="checkout-card">
     <h2 class="mb-4 text-center">🧾 Finaliser la commande</h2>
 
-    <!-- Afficher message erreur si présent -->
     <?php if (!empty($_SESSION['error'])): ?>
       <div class="alert alert-danger">
         <?= htmlspecialchars($_SESSION['error']) ?>
